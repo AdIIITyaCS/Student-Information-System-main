@@ -22,6 +22,7 @@ def main():
         sys.exit(1)
 
     from django.contrib.auth import get_user_model
+    from django.utils.crypto import get_random_string
     from main.mongo import get_mongo_collection
     from main.models import StudentProfile
 
@@ -58,9 +59,14 @@ def main():
                 username = f'mongo_{roll}_{i}'
                 i += 1
 
-        password = User.objects.make_random_password()
-        user = User.objects.create_user(username=username, email=email, password=password,
-                                        first_name=first, last_name=last)
+        # generate a random password for the created user
+        password = get_random_string(12)
+        try:
+            user = User.objects.create_user(username=username, email=email, password=password,
+                                            first_name=first, last_name=last)
+        except Exception as exc:
+            print('Error creating User for roll', roll, exc)
+            continue
 
         profile = StudentProfile.objects.create(
             user=user,
