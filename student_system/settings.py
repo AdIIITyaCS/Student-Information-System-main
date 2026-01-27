@@ -122,3 +122,20 @@ CACHE_MIDDLEWARE_KEY_PREFIX = ''
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = 'DENY'
+
+# Allow setting the external site URL (e.g. https://your-app.onrender.com)
+# Use this to populate `CSRF_TRUSTED_ORIGINS` when deployed behind HTTPS reverse proxies.
+SITE_URL = env('SITE_URL', default='')
+
+# When behind a proxy that terminates TLS (like Render), let Django know
+# so `request.is_secure()` and secure-cookie behavior work correctly.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# CSRF trusted origins (required for HTTPS POST requests from browsers)
+if SITE_URL:
+    CSRF_TRUSTED_ORIGINS = [SITE_URL]
+
+# In production enable secure cookies (only over HTTPS)
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
