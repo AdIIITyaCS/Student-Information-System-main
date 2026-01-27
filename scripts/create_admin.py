@@ -1,7 +1,12 @@
 import os
 import sys
+from pathlib import Path
 
 if __name__ == '__main__':
+    # Ensure project root is on sys.path so Django project modules can be imported
+    project_root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(project_root))
+
     # Set up Django environment
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'student_system.settings')
     try:
